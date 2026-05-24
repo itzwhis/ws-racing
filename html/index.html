@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>WS Racing</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IM+Fell+English+SC&family=IM+Fell+English:ital@0;1&family=Rye&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css"/>
+</head>
+<body>
+
+<!-- ─────────── IN-GAME RACE HUD OVERLAY ─────────── -->
+<div id="race-hud">
+  <div id="rh-type-badge" class="rt-hud-badge">Circuit</div>
+  <div class="rh-bar">
+    <div class="rh-cell"><div class="rh-val rh-gold" id="rh-pos">P1</div><div class="rh-lbl">Pos</div></div>
+    <div class="rh-sep"></div>
+    <div class="rh-cell"><div class="rh-val" id="rh-lap">1/1</div><div class="rh-lbl">Lap</div></div>
+    <div class="rh-sep"></div>
+    <div class="rh-cell"><div class="rh-val" id="rh-speed">0</div><div class="rh-lbl" id="rh-speed-unit">MPH</div></div>
+    <div class="rh-sep"></div>
+    <div class="rh-cell"><div class="rh-val" id="rh-cp">0/0</div><div class="rh-lbl">CP</div></div>
+    <div class="rh-sep"></div>
+    <div class="rh-cell"><div class="rh-val" id="rh-timer">00:00</div><div class="rh-lbl">Time</div></div>
+  </div>
+  <div class="rh-bigtime" id="rh-timer-big">00:00.000</div>
+  <div id="rh-bestlap-wrap" class="best-lap-wrap" style="display:none">
+    <div class="best-lap-time" id="rh-bestlap-time">--:--.---</div>
+    <div class="best-lap-lbl">Best Lap</div>
+  </div>
+</div>
+
+<!-- RACE RANKING (right side) -->
+<div id="race-ranking">
+  <div class="rr-panel">
+    <div class="rr-header">— Standings —</div>
+    <div id="rr-list"></div>
+  </div>
+</div>
+
+<!-- RACE FINISHED ANNOUNCE -->
+<div id="race-announce">
+  <div class="ra-panel">
+    <div class="ra-header">— Race Finished —</div>
+    <div class="ra-subhd">Podium</div>
+    <div id="ra-list"></div>
+  </div>
+</div>
+
+<!-- ─────────── MAIN MENU ─────────── -->
+<div id="app" class="app hidden">
+  <div class="window">
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+      <div class="sb-logo">
+        <div class="logo-mark"><img src="wsscripts-logo.png" alt="WS Scripts" /></div>
+        <div>
+          <div class="logo-name">WS Racing</div>
+          <div class="logo-ver">WS Scripts</div>
+        </div>
+      </div>
+      <nav class="sb-nav">
+        <div class="nav-label">— Main —</div>
+        <button class="nav-item active" data-tab="dashboard"><span>Dashboard</span></button>
+        <button class="nav-item" data-tab="lobby"><span>Race Lobby</span></button>
+        <button class="nav-item admin-only" data-tab="create"><span>Create Race</span></button>
+        <button class="nav-item admin-only" data-tab="saved"><span>Saved Tracks</span></button>
+        <div class="nav-label">— Records —</div>
+        <button class="nav-item" data-tab="leaderboard"><span>Leaderboard</span></button>
+        <button class="nav-item" data-tab="stats"><span>Player Stats</span></button>
+      </nav>
+      <div class="sb-bottom">
+        <div class="sb-line"></div>
+        <div class="sb-profile">
+          <div class="sb-av" id="sb-av">R</div>
+          <div>
+            <div class="sb-uname" id="profile-name">Race Rider</div>
+            <div class="sb-role" id="profile-role">Racer</div>
+          </div>
+          <div class="sb-tier-ico" id="sb-tier-ico">★</div>
+        </div>
+      </div>
+    </aside>
+
+    <!-- MAIN -->
+    <main class="main">
+      <div class="topbar">
+        <div class="tb-l">
+          <div class="tb-crumb">WS Racing &nbsp;/&nbsp; <span id="page-title-crumb">Dashboard</span></div>
+          <div class="tb-live hidden" id="tb-live"><span class="live-dot"></span>Live</div>
+        </div>
+        <div class="tb-r">
+          <div class="tb-clock" id="server-clock">00:00:00</div>
+          <button class="tb-x" id="close-btn">✕</button>
+        </div>
+      </div>
+
+      <div class="content">
+
+        <!-- DASHBOARD -->
+        <section id="dashboard" class="section-view">
+          <div class="hero">
+            <div class="hero-text">
+              <div class="hero-badge" id="hero-badge"><span class="hbadge-dot"></span><span id="hero-badge-text">No active race</span></div>
+              <h1 class="hero-title" id="hero-title">Ride fast or eat dust.
+Join the race and prove you're the fastest rider in the West.</h1>
+              <p class="hero-sub" id="hero-subtitle">Use /racemenu to open this here panel.</p>
+              <div class="hero-stats">
+                <div class="hs-item"><div class="hs-val" id="stat-players">0</div><div class="hs-lbl">Riders</div></div>
+                <div class="hs-sep"></div>
+                <div class="hs-item"><div class="hs-val" id="stat-bet">$0</div><div class="hs-lbl">Pot</div></div>
+                <div class="hs-sep"></div>
+                <div class="hs-item"><div class="hs-val" id="stat-status">Idle</div><div class="hs-lbl">Status</div></div>
+                <div class="hs-sep"></div>
+                <div class="hs-item"><div class="hs-val" id="stat-race">None</div><div class="hs-lbl">Race</div></div>
+              </div>
+            </div>
+          </div>
+          <div class="qcards">
+            <div class="qcard"><div class="qlbl">Current Race</div><div class="qval" id="qc-race">None</div></div>
+            <div class="qcard"><div class="qlbl">Riders Joined</div><div class="qval" id="qc-players">0 / 0</div></div>
+            <div class="qcard"><div class="qlbl">Pot</div><div class="qval c-gold" id="qc-bet">$0</div></div>
+            <div class="qcard"><div class="qlbl">Status</div><div class="qval" id="qc-status">Idle</div></div>
+          </div>
+          <div id="dashboard-lobby-section"></div>
+
+          <div class="recent-races-wrap">
+            <div class="recent-hd">
+              <div class="recent-title">— Recent Races —</div>
+              <button class="btn btn-outline btn-sm" id="refresh-recent">↻ Refresh</button>
+            </div>
+            <div id="recent-races-list" class="recent-list">
+              <div class="empty-blk"><div class="empty-txt">Loading recent races…</div></div>
+            </div>
+          </div>
+        </section>
+
+        <!-- LOBBY -->
+        <section id="lobby" class="section-view hidden">
+          <div class="sec-hd"><div class="sec-title">Race Lobby</div><div class="sec-sub">Join or manage the open race</div></div>
+          <div id="lobby-tab-body"><div class="empty-blk"><div class="empty-txt">No active lobby</div></div></div>
+        </section>
+
+        <!-- CREATE -->
+        <section id="create" class="section-view hidden">
+          <div class="sec-hd"><div class="sec-title">Race Builder</div><div class="sec-sub">Lay down a fresh track</div></div>
+          <div class="create-layout">
+            <div class="c-col">
+              <div class="gc">
+                <div class="gc-head">Race Details</div>
+                <div class="gc-body">
+                  <div class="fgrid">
+                    <div class="field full"><label>Race Name</label><input id="create-name" class="inp" type="text" placeholder="e.g. Valentine Loop"/></div>
+                    <div class="field"><label>Max Riders</label><input id="create-max" class="inp" type="number" value="10" min="1" max="32"/></div>
+                    <div class="field"><label>Min Level</label><input id="create-level" class="inp" type="number" value="0" min="0"/></div>
+                    <div class="field full"><label>Laps</label>
+                      <div class="laps-row"><button class="lap-btn" onclick="adjLaps(-1)">−</button><div class="lap-num" id="lap-display">3</div><button class="lap-btn" onclick="adjLaps(1)">+</button><input type="hidden" id="create-laps" value="3"/></div>
+                    </div>
+                    <div class="field full"><label class="chk-lbl"><input id="create-collision" type="checkbox" checked/><span class="chk-box"></span>Enable Collision</label></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="c-col">
+              <div class="gc">
+                <div class="gc-head">Route Setup</div>
+                <div class="gc-body">
+                  <p class="route-hint">Ride to each point then tap a button or use F5 / F6 / F7.</p>
+                  <div class="route-btns">
+                    <button class="btn btn-outline" id="create-start">▶ Start Setup</button>
+                    <button class="btn btn-outline" id="add-checkpoint">+ Checkpoint</button>
+                    <button class="btn btn-outline" id="add-start">+ Start Point</button>
+                    <button class="btn btn-gold" id="save-race-ui">Save Track</button>
+                    <button class="btn btn-ghost" id="cancel-create-ui">Cancel</button>
+                  </div>
+                  <div class="key-hint">F5 = Checkpoint &nbsp;·&nbsp; F6 = Start &nbsp;·&nbsp; F7 = Undo</div>
+                  <div class="mm-wrap">
+                    <div class="mm-hd"><span>Track Preview</span><span class="mm-cnt" id="mm-cp-count">0 CP</span></div>
+                    <div class="mm-box">
+                      <svg id="mm-svg" width="100%" height="100%" viewBox="0 0 285 165">
+                        <text x="142" y="88" text-anchor="middle" font-size="11" fill="rgba(120,90,40,.4)" font-family="IM Fell English, serif">No Track Loaded</text>
+                      </svg>
+                    </div>
+                  </div>
+                  <div class="cplists">
+                    <div class="cpbox"><div class="cpbox-hd">Checkpoints</div><div id="checkpoint-list" class="cpbox-body muted-t">No checkpoints yet.</div></div>
+                    <div class="cpbox"><div class="cpbox-hd">Start Positions</div><div id="start-list" class="cpbox-body muted-t">No start positions yet.</div></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- SAVED -->
+        <section id="saved" class="section-view hidden">
+          <div class="sec-hd">
+            <div class="sec-title">Saved Tracks</div><div class="sec-sub">Pick a race to open a lobby</div>
+            <button class="btn btn-outline" id="refresh-saved-races" style="margin-left:auto">↻ Refresh</button>
+          </div>
+          <div id="saved-race-list" class="race-list">
+            <div class="empty-blk"><div class="empty-txt">Press refresh to load saved races</div></div>
+          </div>
+        </section>
+
+        <!-- LEADERBOARD -->
+        <section id="leaderboard" class="section-view hidden">
+          <div class="sec-hd">
+            <div class="sec-title">Hall of Fame</div><div class="sec-sub">Season standings</div>
+            <button class="btn btn-outline" id="refresh-leaderboard" style="margin-left:auto">↻ Refresh</button>
+          </div>
+          <div class="lb-note">Score: 1st=100 · 2nd=75 · 3rd=50 · 4th=40 · 5th=30 · 6th=25 · 7th=20 · 8th=15 · 9th=10 · 10th+=5</div>
+          <div id="global-leaderboard-list" class="lb-list">
+            <div class="empty-blk"><div class="empty-txt">Press refresh to load rankings</div></div>
+          </div>
+        </section>
+
+        <!-- PLAYER STATS -->
+        <section id="stats" class="section-view hidden">
+          <div class="sec-hd"><div class="sec-title">Rider Stats</div><div class="sec-sub">Your racing record</div></div>
+          <div class="stats-layout">
+            <div class="gc">
+              <div class="gc-head">Rank</div>
+              <div class="gc-body">
+                <div class="rank-center">
+                  <div class="rank-icon" id="rank-icon">★</div>
+                  <div class="rank-name" id="rank-tier-name">Bronze</div>
+                  <div class="rank-pts" id="rank-pts">0 pts</div>
+                </div>
+                <div class="rank-prog-wrap">
+                  <div class="rank-prog-lbl"><span id="rp-from">Bronze</span><span id="rp-to">Silver →</span></div>
+                  <div class="rank-prog-track"><div class="rank-prog-fill" id="rank-prog-fill" style="width:0%"></div></div>
+                </div>
+                <div class="rank-stats">
+                  <div class="rstat"><div class="rstat-val c-green" id="rs-wins">0</div><div class="rstat-lbl">Wins</div></div>
+                  <div class="rstat"><div class="rstat-val c-red" id="rs-losses">0</div><div class="rstat-lbl">Losses</div></div>
+                  <div class="rstat"><div class="rstat-val c-gold" id="rs-winrate">0%</div><div class="rstat-lbl">Win Rate</div></div>
+                  <div class="rstat"><div class="rstat-val c-cyan" id="rs-races">0</div><div class="rstat-lbl">Races</div></div>
+                </div>
+              </div>
+            </div>
+            <div class="gc">
+              <div class="gc-head">Tiers</div>
+              <div class="gc-body">
+                <div class="tier-list">
+                  <div class="tier-row"><span class="tier-nm t-bronze">★ Bronze</span><span class="tier-rng">0 – 199</span></div>
+                  <div class="tier-row"><span class="tier-nm t-silver">★★ Silver</span><span class="tier-rng">200 – 499</span></div>
+                  <div class="tier-row"><span class="tier-nm t-gold">★★★ Gold</span><span class="tier-rng">500 – 999</span></div>
+                  <div class="tier-row"><span class="tier-nm t-plat">★★★★ Platinum</span><span class="tier-rng">1000 – 1999</span></div>
+                  <div class="tier-row"><span class="tier-nm t-legend">★★★★★ Legend</span><span class="tier-rng">2000+</span></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+      </div>
+    </main>
+  </div>
+
+  <!-- LOBBY MODAL -->
+  <div id="lobby-modal" class="modal hidden">
+    <div class="modal-card modal-wide">
+      <div class="modal-hd">
+        <div><h3 class="modal-title">— Open Lobby —</h3><span id="lobby-modal-race-name" class="modal-tag"></span></div>
+        <button class="modal-x" onclick="closeLobbyModal()">✕</button>
+      </div>
+      <div class="modal-body">
+        <div class="mfgrid">
+          <div class="field"><label>Max Riders</label><input id="lobby-max" class="inp" type="number" min="1" max="32" value="10"/></div>
+          <div class="field"><label>Pot ($)</label><input id="lobby-bet" class="inp" type="number" min="0" value="0"/></div>
+          <div class="field"><label>Laps</label><input id="lobby-laps" class="inp" type="number" min="1" max="10" value="1"/></div>
+          <div class="field" style="display:flex;align-items:flex-end;padding-bottom:5px">
+            <label class="chk-lbl"><input id="lobby-collision" type="checkbox" checked/><span class="chk-box"></span>Enable Collision</label>
+          </div>
+        </div>
+      </div>
+      <div class="modal-ft">
+        <button class="btn btn-ghost" id="lobby-cancel">Cancel</button>
+        <button class="btn btn-gold" id="lobby-open">Open Lobby</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- START MODAL -->
+  <div id="start-modal" class="modal hidden">
+    <div class="modal-card">
+      <div class="modal-hd"><h3 class="modal-title">— Start Race —</h3></div>
+      <div class="modal-body">
+        <p id="start-modal-info" class="modal-info"></p>
+        <div class="start-warn">All riders will be teleported to start positions</div>
+      </div>
+      <div class="modal-ft">
+        <button class="btn btn-ghost" id="start-cancel">Cancel</button>
+        <button class="btn btn-green" id="start-confirm">Start Race</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- RACE DETAIL MODAL -->
+  <div id="race-detail-modal" class="modal hidden">
+    <div class="modal-card modal-wide" style="max-width:680px">
+      <div class="modal-hd">
+        <div>
+          <h3 class="modal-title" id="rdm-title">Race Name</h3>
+          <div style="display:flex;gap:10px;margin-top:4px">
+            <span class="modal-tag" id="rdm-laps"></span>
+            <span class="modal-tag" id="rdm-pot"></span>
+          </div>
+        </div>
+        <button class="modal-x" onclick="closeRaceDetailModal()">✕</button>
+      </div>
+      <div class="modal-body" style="padding:0">
+        <div class="rdm-layout">
+          <div class="rdm-col">
+            <div class="rdm-col-hd">— Top 10 Results —</div>
+            <div id="rdm-top10" class="rdm-scroll"></div>
+          </div>
+          <div class="rdm-col">
+            <div class="rdm-col-hd">— All Riders <span id="rdm-count" class="rdm-count"></span> —</div>
+            <div id="rdm-participants" class="rdm-scroll"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+<script src="app.js"></script>
+</body>
+</html>

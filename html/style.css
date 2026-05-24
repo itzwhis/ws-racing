@@ -1,0 +1,289 @@
+/* RSG RACING — RDR2 Parchment & Leather Theme */
+:root{
+  --paper:#e8dcc0; --paper2:#dccfae; --paper3:#cfbf99;
+  --ink:#2a1f12; --ink2:#4a3a25; --ink3:#7a6444;
+  --gold:#a8853c; --gold2:#c9a24a; --gold3:#7a6028;
+  --red:#8b2a1a; --green:#5e7a3a; --cyan:#3a6b7a;
+  --leather:#3a2a1a; --leather2:#241710;
+  --sbw:210px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'IM Fell English',Georgia,serif;background:transparent;color:var(--ink);overflow:hidden;-webkit-font-smoothing:antialiased}
+.hidden{display:none!important}
+
+/* APP */
+.app{width:100vw;height:100vh;display:flex;align-items:center;justify-content:center;background:rgba(20,12,6,.55)}
+.window{width:1120px;height:740px;background:var(--paper);border:2px solid var(--leather);border-radius:4px;overflow:hidden;display:flex;position:relative;box-shadow:0 0 0 4px var(--paper2),0 0 0 5px var(--gold3),0 30px 70px rgba(0,0,0,.7)}
+.window::before{content:'';position:absolute;inset:0;pointer-events:none;background:radial-gradient(circle at 50% 50%,transparent 40%,rgba(80,50,20,.18) 100%);z-index:1}
+
+/* SIDEBAR */
+.sidebar{width:var(--sbw);background:var(--leather);color:var(--paper);display:flex;flex-direction:column;flex-shrink:0;border-right:2px solid var(--gold3);position:relative;z-index:2}
+.sb-logo{padding:18px 16px 14px;border-bottom:1px solid rgba(168,133,60,.35);display:flex;align-items:center;gap:10px}
+.logo-mark{width:40px;height:40px;flex-shrink:0;background:var(--leather2);display:flex;align-items:center;justify-content:center;border-radius:50%;border:1px solid var(--gold3);overflow:hidden}
+.logo-mark img{width:100%;height:100%;object-fit:cover;display:block}
+.logo-name{font-family:'Rye',serif;font-size:15px;color:var(--gold2);letter-spacing:.04em}
+.logo-ver{font-family:'IM Fell English SC',serif;font-size:9px;color:rgba(232,220,192,.45);letter-spacing:.18em;margin-top:2px;text-transform:uppercase}
+.sb-nav{padding:12px 8px;flex:1;overflow-y:auto}
+.nav-label{font-family:'IM Fell English SC',serif;font-size:10px;color:var(--gold2);padding:8px 10px 4px;letter-spacing:.18em;text-align:center}
+.nav-item{width:100%;padding:10px 14px;background:transparent;border:none;color:rgba(232,220,192,.72);font-family:'IM Fell English',serif;font-size:15px;cursor:pointer;text-align:left;border-radius:2px;transition:color .12s,background .12s;letter-spacing:.04em;margin-bottom:1px}
+.nav-item:hover{color:var(--gold2);background:rgba(168,133,60,.08)}
+.nav-item.active{color:var(--gold2);background:rgba(168,133,60,.14);border-left:2px solid var(--gold)}
+.sb-bottom{flex-shrink:0;padding-bottom:6px}
+.sb-line{height:1px;margin:0 14px;background:rgba(168,133,60,.3)}
+.sb-profile{padding:12px 14px;display:flex;align-items:center;gap:9px}
+.sb-av{width:34px;height:34px;border-radius:50%;background:var(--gold);color:var(--leather);display:flex;align-items:center;justify-content:center;font-family:'Rye',serif;font-size:13px;border:1px solid var(--gold3)}
+.sb-uname{font-size:14px;color:var(--paper)}
+.sb-role{font-size:11px;color:var(--gold2);font-family:'IM Fell English SC',serif;letter-spacing:.06em}
+.sb-tier-ico{margin-left:auto;color:var(--gold2);font-size:15px}
+
+/* MAIN */
+.main{flex:1;display:flex;flex-direction:column;background:var(--paper);min-width:0;position:relative;z-index:2}
+.topbar{height:50px;padding:0 22px;border-bottom:2px solid var(--leather);display:flex;align-items:center;justify-content:space-between;background:var(--paper2)}
+.tb-crumb{font-family:'IM Fell English SC',serif;font-size:12px;color:var(--ink2);letter-spacing:.14em;text-transform:uppercase}
+.tb-crumb span{color:var(--gold3)}
+.tb-live{display:flex;align-items:center;gap:6px;padding:3px 10px;border:1px solid var(--red);font-size:10px;color:var(--red);letter-spacing:.1em;text-transform:uppercase;margin-left:10px}
+.live-dot{width:6px;height:6px;border-radius:50%;background:var(--red)}
+.tb-r{display:flex;align-items:center;gap:12px}
+.tb-clock{font-family:'IM Fell English SC',serif;font-size:13px;color:var(--ink2);letter-spacing:.1em}
+.tb-x{width:28px;height:28px;border:1px solid var(--ink2);background:transparent;color:var(--ink2);cursor:pointer;font-size:13px;display:flex;align-items:center;justify-content:center;border-radius:2px}
+.tb-x:hover{background:var(--red);color:var(--paper);border-color:var(--red)}
+
+/* CONTENT */
+.content{flex:1;overflow-y:auto;padding:20px 22px;scrollbar-width:thin;scrollbar-color:var(--gold3) transparent}
+.content::-webkit-scrollbar{width:6px}
+.content::-webkit-scrollbar-thumb{background:var(--gold3)}
+
+/* SEC HEADER */
+.sec-hd{display:flex;align-items:center;gap:12px;margin-bottom:16px;padding-bottom:10px;border-bottom:1px solid var(--paper3)}
+.sec-title{font-family:'Rye',serif;font-size:20px;color:var(--ink);letter-spacing:.02em}
+.sec-sub{font-size:13px;color:var(--ink3);font-style:italic}
+
+/* HERO */
+.hero{position:relative;padding:22px 26px;border:1px solid var(--paper3);background:linear-gradient(180deg,var(--paper2),var(--paper));margin-bottom:16px;border-radius:3px}
+.hero::before,.hero::after{content:'❦';position:absolute;top:8px;color:var(--gold3);font-size:14px}
+.hero::before{left:10px}.hero::after{right:10px}
+.hero-badge{display:inline-flex;align-items:center;gap:7px;padding:3px 12px;border:1px solid var(--gold3);color:var(--gold3);font-family:'IM Fell English SC',serif;font-size:11px;letter-spacing:.14em;text-transform:uppercase;margin-bottom:8px}
+.hbadge-dot{width:6px;height:6px;border-radius:50%;background:var(--gold)}
+.hero-title{font-family:'Rye',serif;font-size:30px;color:var(--ink);letter-spacing:.02em;margin-bottom:4px}
+.hero-sub{font-size:14px;color:var(--ink2);margin-bottom:14px;font-style:italic}
+.hero-stats{display:flex;align-items:center}
+.hs-item{padding:0 18px}.hs-item:first-child{padding-left:0}
+.hs-val{font-family:'Rye',serif;font-size:18px;color:var(--gold3);line-height:1}
+.hs-lbl{font-size:11px;color:var(--ink3);font-family:'IM Fell English SC',serif;letter-spacing:.14em;text-transform:uppercase;margin-top:3px}
+.hs-sep{width:1px;height:28px;background:var(--paper3)}
+
+/* QUICK CARDS */
+.qcards{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:16px}
+.qcard{background:var(--paper2);border:1px solid var(--paper3);padding:14px 16px;text-align:center;border-radius:3px}
+.qlbl{font-family:'IM Fell English SC',serif;font-size:10px;color:var(--ink3);letter-spacing:.16em;text-transform:uppercase;margin-bottom:6px}
+.qval{font-family:'Rye',serif;font-size:15px;color:var(--ink)}
+
+/* EMPTY */
+.empty-blk{background:var(--paper2);border:1px dashed var(--paper3);padding:30px 20px;text-align:center;border-radius:3px}
+.empty-txt{font-size:14px;color:var(--ink3);font-style:italic}
+
+/* LOBBY PANEL */
+.lp{background:var(--paper2);border:1px solid var(--paper3);border-radius:3px;overflow:hidden}
+.lp-hd{padding:14px 18px;border-bottom:1px solid var(--paper3);display:flex;justify-content:space-between;align-items:center}
+.lp-name{font-family:'Rye',serif;font-size:18px;color:var(--ink)}
+.race-meta{display:flex;gap:14px;font-size:12px;color:var(--ink3);margin-top:5px;font-family:'IM Fell English SC',serif;letter-spacing:.06em}
+.badge-open{color:var(--gold3)!important}
+.badge-running{color:var(--green)!important}
+.lp-players{padding:14px 18px}
+.lpp-title{font-family:'IM Fell English SC',serif;font-size:11px;color:var(--ink3);margin-bottom:10px;letter-spacing:.14em;text-transform:uppercase;display:flex;gap:9px;align-items:center}
+.players-count{background:var(--gold);color:var(--leather);padding:1px 8px;border-radius:10px;font-size:11px}
+.players-grid{display:flex;flex-wrap:wrap;gap:7px}
+.player-chip{display:flex;align-items:center;gap:7px;padding:6px 11px;background:var(--paper);border:1px solid var(--paper3);font-size:13px;border-radius:2px}
+.chip-name{color:var(--ink)}
+.lp-admin{padding:12px 18px;border-top:1px solid var(--paper3);display:flex;gap:8px}
+
+/* GLASS CARD */
+.gc{background:var(--paper2);border:1px solid var(--paper3);border-radius:3px;overflow:hidden}
+.gc-head{padding:12px 16px;font-family:'Rye',serif;font-size:13px;color:var(--ink);background:var(--paper3);border-bottom:1px solid var(--gold3);letter-spacing:.04em}
+.gc-body{padding:14px 16px}
+
+/* CREATE */
+.create-layout{display:grid;grid-template-columns:1fr 365px;gap:14px}
+.c-col{display:flex;flex-direction:column}
+.fgrid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.field.full{grid-column:1/-1}
+.field label{display:block;margin-bottom:6px;font-family:'IM Fell English SC',serif;font-size:10px;color:var(--ink3);letter-spacing:.16em;text-transform:uppercase}
+.inp{width:100%;background:var(--paper);border:1px solid var(--paper3);color:var(--ink);border-radius:2px;padding:9px 12px;font-family:'IM Fell English',serif;font-size:14px;outline:none}
+.inp:focus{border-color:var(--gold3)}
+.laps-row{display:flex;align-items:center;gap:10px}
+.lap-btn{width:34px;height:34px;border:1px solid var(--gold3);background:var(--paper);color:var(--ink);font-size:18px;cursor:pointer;border-radius:2px}
+.lap-btn:hover{background:var(--gold);color:var(--leather)}
+.lap-num{font-family:'Rye',serif;font-size:22px;color:var(--ink);min-width:36px;text-align:center}
+.chk-lbl{display:flex;align-items:center;gap:9px;cursor:pointer;color:var(--ink2);font-size:14px}
+.chk-lbl input{display:none}
+.chk-box{width:17px;height:17px;border:1px solid var(--ink3);background:var(--paper);flex-shrink:0;display:flex;align-items:center;justify-content:center}
+.chk-lbl input:checked+.chk-box{background:var(--gold);border-color:var(--gold3)}
+.chk-lbl input:checked+.chk-box::after{content:'✓';font-size:11px;color:var(--leather)}
+
+/* ROUTE */
+.route-hint{font-size:13px;color:var(--ink3);margin-bottom:10px;font-style:italic}
+.route-btns{display:flex;flex-wrap:wrap;gap:7px;margin-bottom:8px}
+.key-hint{font-size:11px;color:var(--ink3);font-family:'IM Fell English SC',serif;letter-spacing:.06em;margin-bottom:12px}
+.mm-wrap{margin-bottom:12px}
+.mm-hd{display:flex;justify-content:space-between;margin-bottom:6px;font-family:'IM Fell English SC',serif;font-size:11px;color:var(--ink3);letter-spacing:.14em;text-transform:uppercase}
+.mm-cnt{background:var(--gold);color:var(--leather);padding:1px 8px;border-radius:10px;font-size:10px}
+.mm-box{width:100%;height:155px;background:var(--paper);border:1px solid var(--paper3);overflow:hidden;border-radius:2px}
+.cplists{display:grid;grid-template-columns:1fr 1fr;gap:9px}
+.cpbox{background:var(--paper);border:1px solid var(--paper3);border-radius:2px;overflow:hidden}
+.cpbox-hd{padding:7px 10px;font-family:'IM Fell English SC',serif;font-size:10px;color:var(--ink2);background:var(--paper2);border-bottom:1px solid var(--paper3);letter-spacing:.14em;text-transform:uppercase}
+.cpbox-body{padding:8px;max-height:120px;overflow-y:auto}
+.muted-t{color:var(--ink3);font-size:12px;font-style:italic}
+.coord-row{padding:6px 8px;background:var(--paper2);border:1px solid var(--paper3);margin-bottom:4px}
+.coord-row strong{color:var(--gold3);font-size:11px;display:block;font-family:'IM Fell English SC',serif;letter-spacing:.1em}
+.coord-row span{font-size:11px;color:var(--ink3);font-family:'IM Fell English SC',serif}
+
+/* SAVED */
+.race-list{display:flex;flex-direction:column;gap:10px}
+.race-card{background:var(--paper2);border:1px solid var(--paper3);padding:14px 16px;display:flex;justify-content:space-between;align-items:center;gap:12px;border-radius:3px}
+.race-card:hover{border-color:var(--gold3)}
+.race-card-active{border-color:var(--gold3)!important;background:rgba(168,133,60,.08)!important}
+.race-left{display:flex;gap:13px;align-items:center}
+.race-icon{width:42px;height:42px;border:1px solid var(--gold3);color:var(--gold3);display:flex;align-items:center;justify-content:center;font-size:18px;background:var(--paper)}
+.race-title{font-family:'Rye',serif;font-size:15px;color:var(--ink);margin-bottom:3px}
+.race-actions{display:flex;gap:7px;flex-shrink:0}
+
+/* LEADERBOARD */
+.lb-note{font-size:12px;color:var(--ink3);padding:8px 12px;margin-bottom:13px;background:var(--paper2);border:1px solid var(--paper3);font-family:'IM Fell English SC',serif;letter-spacing:.04em}
+.lb-list{display:flex;flex-direction:column;gap:7px}
+.lb-row{display:flex;align-items:center;gap:14px;background:var(--paper2);border:1px solid var(--paper3);padding:11px 16px;border-radius:3px}
+.lb-first{border-color:var(--gold3)!important;background:rgba(168,133,60,.07)!important}
+.lb-rank{font-family:'Rye',serif;font-size:20px;width:36px;text-align:center;color:var(--gold3)}
+.lb-info{flex:1;min-width:0}
+.lb-name{font-family:'Rye',serif;font-size:15px;color:var(--ink);margin-bottom:3px}
+.lb-sub{font-size:11px;color:var(--ink3);font-style:italic}
+.lb-bar-wrap{height:3px;background:var(--paper3);margin-top:5px;border-radius:2px;overflow:hidden}
+.lb-bar{height:100%;background:var(--gold)}
+.lb-score-box{text-align:right;flex-shrink:0}
+.lb-score{font-family:'Rye',serif;font-size:20px;color:var(--gold3)}
+.lb-score-label{font-size:10px;color:var(--ink3);font-family:'IM Fell English SC',serif;letter-spacing:.12em}
+.rank-tier-badge{display:inline-block;font-family:'IM Fell English SC',serif;font-size:10px;padding:1px 8px;border:1px solid var(--paper3);margin-top:3px;letter-spacing:.1em}
+
+/* PLAYER STATS */
+.stats-layout{display:grid;grid-template-columns:300px 1fr;gap:14px}
+.rank-center{text-align:center;padding:10px 0}
+.rank-icon{font-size:42px;color:var(--gold3);margin-bottom:4px}
+.rank-name{font-family:'Rye',serif;font-size:22px;color:var(--ink)}
+.rank-pts{font-family:'IM Fell English SC',serif;font-size:13px;color:var(--ink3);margin-top:4px;letter-spacing:.1em}
+.rank-prog-wrap{margin:12px 0}
+.rank-prog-lbl{display:flex;justify-content:space-between;font-size:11px;color:var(--ink3);font-family:'IM Fell English SC',serif;letter-spacing:.1em;margin-bottom:5px;text-transform:uppercase}
+.rank-prog-track{height:5px;background:var(--paper3);overflow:hidden;border-radius:2px}
+.rank-prog-fill{height:100%;background:var(--gold)}
+.rank-stats{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-top:14px}
+.rstat{background:var(--paper);border:1px solid var(--paper3);padding:10px;text-align:center}
+.rstat-val{font-family:'Rye',serif;font-size:18px}
+.rstat-lbl{font-size:10px;color:var(--ink3);font-family:'IM Fell English SC',serif;letter-spacing:.1em;margin-top:3px}
+.tier-list{display:flex;flex-direction:column;gap:7px}
+.tier-row{display:flex;align-items:center;gap:12px;padding:9px 12px;background:var(--paper);border:1px solid var(--paper3)}
+.tier-nm{font-family:'Rye',serif;font-size:14px;flex:1}
+.tier-rng{font-family:'IM Fell English SC',serif;font-size:11px;color:var(--ink3)}
+.t-bronze{color:#8b5a2b}.t-silver{color:#7a7a7a}.t-gold{color:var(--gold3)}.t-plat{color:#5a7a8b}.t-legend{color:var(--red)}
+
+/* BUTTONS */
+.btn{border:none;padding:8px 16px;cursor:pointer;font-family:'IM Fell English SC',serif;font-size:12px;letter-spacing:.12em;text-transform:uppercase;border-radius:2px;transition:background .12s,color .12s}
+.btn-sm{font-size:10px;padding:5px 11px}
+.btn-gold{background:var(--gold);color:var(--leather);border:1px solid var(--gold3)}
+.btn-gold:hover{background:var(--gold2)}
+.btn-outline{background:transparent;color:var(--ink);border:1px solid var(--ink2)}
+.btn-outline:hover{background:var(--paper3)}
+.btn-ghost{background:var(--paper3);color:var(--ink2);border:1px solid var(--paper3)}
+.btn-ghost:hover{background:var(--paper2)}
+.btn-danger{background:transparent;color:var(--red);border:1px solid var(--red)}
+.btn-danger:hover{background:var(--red);color:var(--paper)}
+.btn-green{background:var(--green);color:var(--paper);border:1px solid var(--green)}
+.btn-green:hover{filter:brightness(1.1)}
+
+/* MODALS */
+.modal{position:absolute;inset:0;background:rgba(20,12,6,.6);display:flex;align-items:center;justify-content:center;z-index:50}
+.modal-card{background:var(--paper);border:2px solid var(--leather);box-shadow:0 0 0 4px var(--paper2),0 0 0 5px var(--gold3),0 20px 50px rgba(0,0,0,.5);width:400px;overflow:hidden;border-radius:3px}
+.modal-wide{width:520px!important}
+.modal-hd{padding:16px 20px 8px;display:flex;align-items:flex-start;justify-content:space-between;gap:10px;border-bottom:1px solid var(--paper3)}
+.modal-title{font-family:'Rye',serif;font-size:17px;color:var(--ink);margin:0}
+.modal-tag{color:var(--gold3);font-family:'IM Fell English SC',serif;font-size:11px;padding:2px 9px;border:1px solid var(--paper3);display:inline-block;letter-spacing:.1em}
+.modal-x{background:transparent;border:1px solid var(--ink3);cursor:pointer;color:var(--ink2);font-size:13px;width:26px;height:26px;display:flex;align-items:center;justify-content:center;border-radius:2px}
+.modal-x:hover{background:var(--red);color:var(--paper);border-color:var(--red)}
+.modal-body{padding:14px 20px}
+.mfgrid{display:grid;grid-template-columns:1fr 1fr;gap:11px}
+.modal-info{font-size:14px;color:var(--ink2);margin-bottom:10px}
+.start-warn{padding:9px 12px;background:rgba(139,42,26,.08);border:1px solid var(--red);font-size:12px;color:var(--red);font-family:'IM Fell English SC',serif;letter-spacing:.06em}
+.modal-ft{padding:14px 20px;display:flex;justify-content:flex-end;gap:9px;border-top:1px solid var(--paper3)}
+
+/* COLORS */
+.c-gold{color:var(--gold3)}.c-green{color:var(--green)}.c-cyan{color:var(--cyan)}.c-red{color:var(--red)}
+
+/* RECENT RACES */
+.recent-races-wrap{margin-top:16px}
+.recent-hd{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
+.recent-title{font-family:'Rye',serif;font-size:15px;color:var(--ink)}
+.recent-list{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.rc-card{background:var(--paper2);border:1px solid var(--paper3);padding:12px;cursor:pointer;border-radius:3px}
+.rc-card:hover{border-color:var(--gold3)}
+.rc-name{font-family:'Rye',serif;font-size:14px;color:var(--ink);margin-bottom:6px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.rc-meta{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:8px}
+.rc-tag{font-family:'IM Fell English SC',serif;font-size:9px;letter-spacing:.1em;padding:2px 6px;border:1px solid var(--paper3);color:var(--ink3)}
+.rc-stats{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+.rc-stat{background:var(--paper);border:1px solid var(--paper3);padding:6px;text-align:center}
+.rc-stat-val{font-family:'Rye',serif;font-size:13px;color:var(--ink)}
+.rc-stat-lbl{font-size:9px;color:var(--ink3);font-family:'IM Fell English SC',serif;letter-spacing:.1em;margin-top:1px}
+.rc-winner{margin-top:8px;padding:6px 10px;background:rgba(168,133,60,.1);border:1px solid var(--gold3);display:flex;align-items:center;gap:8px;font-size:12px}
+.rc-winner-name{color:var(--gold3);font-family:'Rye',serif}
+.rc-winner-time{color:var(--ink3);font-family:'IM Fell English SC',serif;margin-left:auto}
+.rc-view-btn{margin-top:8px;width:100%;padding:5px;background:transparent;border:1px solid var(--paper3);color:var(--ink2);font-family:'IM Fell English SC',serif;font-size:10px;letter-spacing:.1em;cursor:pointer;text-align:center}
+.rc-card:hover .rc-view-btn{border-color:var(--gold3);color:var(--gold3)}
+.rdm-layout{display:grid;grid-template-columns:1fr 1fr;gap:0}
+.rdm-col{padding:14px}
+.rdm-col+.rdm-col{border-left:1px solid var(--paper3)}
+.rdm-col-hd{font-family:'IM Fell English SC',serif;font-size:11px;color:var(--ink3);margin-bottom:10px;letter-spacing:.14em;text-transform:uppercase}
+.rdm-scroll{max-height:320px;overflow-y:auto;display:flex;flex-direction:column;gap:4px}
+.rdm-row{display:flex;align-items:center;gap:8px;padding:7px 10px;background:var(--paper2);border:1px solid var(--paper3)}
+.rdm-top1{background:rgba(168,133,60,.1);border-color:var(--gold3)}
+.rdm-pos{width:22px;height:22px;display:flex;align-items:center;justify-content:center;font-family:'Rye',serif;font-size:11px;background:var(--paper);border:1px solid var(--paper3);flex-shrink:0;color:var(--ink2)}
+.rdm-top1 .rdm-pos{background:var(--gold);color:var(--leather);border-color:var(--gold3)}
+.rdm-name{font-size:13px;color:var(--ink);flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.rdm-time{font-size:11px;color:var(--ink3);font-family:'IM Fell English SC',serif;flex-shrink:0;letter-spacing:.06em}
+.rdm-prize{font-size:11px;color:var(--green);font-family:'IM Fell English SC',serif;flex-shrink:0}
+.rdm-count{font-size:10px;padding:1px 7px;background:var(--paper3);color:var(--ink2);margin-left:6px}
+
+/* ─── IN-GAME HUD (race + ranking + announce) ─── */
+#race-hud{position:fixed;top:60px;left:50%;transform:translateX(-50%);z-index:99999;pointer-events:none;display:none;font-family:'IM Fell English',serif;color:var(--paper)}
+.rh-bar{background:rgba(20,12,6,.88);border:1px solid var(--gold3);padding:5px 16px;display:flex;gap:12px;align-items:center;border-radius:2px;box-shadow:0 4px 18px rgba(0,0,0,.6)}
+.rh-cell{text-align:center;min-width:38px}
+.rh-val{font-family:'Rye',serif;font-size:18px;color:var(--paper);line-height:1}
+.rh-gold{color:var(--gold2)!important}
+.rh-lbl{font-family:'IM Fell English SC',serif;font-size:9px;color:rgba(232,220,192,.55);margin-top:2px;letter-spacing:.16em;text-transform:uppercase}
+.rh-sep{width:1px;height:28px;background:rgba(168,133,60,.4)}
+.rh-bigtime{text-align:center;margin-top:5px;font-family:'IM Fell English SC',serif;font-size:14px;color:var(--gold2);letter-spacing:.12em}
+.rt-hud-badge{display:block;margin:0 auto 6px;width:fit-content;font-family:'IM Fell English SC',serif;font-size:10px;padding:3px 12px;border:1px solid var(--gold3);color:var(--gold2);background:rgba(20,12,6,.7);letter-spacing:.16em;text-transform:uppercase}
+.best-lap-wrap{text-align:center;padding:6px;margin-top:6px;background:rgba(20,12,6,.7);border:1px solid var(--green)}
+.best-lap-time{font-family:'IM Fell English SC',serif;font-size:18px;color:var(--paper);letter-spacing:.1em}
+.best-lap-lbl{font-family:'IM Fell English SC',serif;font-size:9px;color:rgba(232,220,192,.55);letter-spacing:.16em;text-transform:uppercase;margin-top:2px}
+
+#race-ranking{position:fixed;right:18px;top:50%;transform:translateY(-50%);z-index:99998;pointer-events:none;display:none;font-family:'IM Fell English',serif;width:240px}
+.rr-panel{background:rgba(20,12,6,.92);border:1px solid var(--gold3);color:var(--paper);overflow:hidden;box-shadow:0 4px 22px rgba(0,0,0,.7)}
+.rr-header{padding:7px 12px;text-align:center;font-family:'Rye',serif;font-size:13px;color:var(--gold2);border-bottom:1px solid var(--gold3);background:rgba(168,133,60,.08)}
+.rr-row{display:flex;align-items:center;gap:8px;padding:6px 10px;border-bottom:1px solid rgba(168,133,60,.15)}
+.rr-row:last-child{border-bottom:none}
+.rr-row.rr-me{background:rgba(168,133,60,.15);border-left:3px solid var(--gold)}
+.rr-badge{width:24px;height:24px;display:flex;align-items:center;justify-content:center;font-family:'Rye',serif;font-size:12px;background:rgba(232,220,192,.08);color:rgba(232,220,192,.7);flex-shrink:0;border-radius:2px}
+.rr-b1{background:var(--gold);color:var(--leather)}
+.rr-b2{background:#c0c0c0;color:#1a1a1a}
+.rr-b3{background:#cd7f32;color:#1a1a1a}
+.rr-name{font-size:13px;flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:rgba(232,220,192,.9)}
+.rr-me .rr-name{color:var(--gold2)}
+.rr-gap{font-family:'IM Fell English SC',serif;font-size:10px;color:rgba(232,220,192,.5);flex-shrink:0;letter-spacing:.06em}
+
+#race-announce{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);z-index:99999;pointer-events:none;display:none;font-family:'IM Fell English',serif;min-width:340px;color:var(--paper)}
+.ra-panel{background:rgba(20,12,6,.95);border:2px solid var(--gold3);overflow:hidden;box-shadow:0 8px 40px rgba(0,0,0,.85)}
+.ra-header{padding:10px 18px;text-align:center;font-family:'Rye',serif;font-size:16px;color:var(--gold2);border-bottom:1px solid var(--gold3);background:rgba(168,133,60,.1)}
+.ra-subhd{font-family:'IM Fell English SC',serif;font-size:10px;letter-spacing:.2em;color:var(--gold3);text-align:center;padding:4px 0 2px;text-transform:uppercase}
+.ra-row{display:flex;align-items:center;gap:12px;padding:9px 18px;border-bottom:1px solid rgba(168,133,60,.15)}
+.ra-row:last-child{border-bottom:none}
+.ra-badge{width:32px;height:32px;display:flex;align-items:center;justify-content:center;font-family:'Rye',serif;font-size:16px;background:rgba(232,220,192,.08);color:rgba(232,220,192,.7);flex-shrink:0;border-radius:2px}
+.ra-b1{background:var(--gold);color:var(--leather)}
+.ra-b2{background:#c0c0c0;color:#1a1a1a}
+.ra-b3{background:#cd7f32;color:#1a1a1a}
+.ra-name{font-family:'Rye',serif;font-size:15px;color:var(--paper);flex:1}
