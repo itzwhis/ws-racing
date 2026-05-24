@@ -6,7 +6,7 @@ Config = {}
 -- Find your license via console: print(GetPlayerIdentifiers(source))
 -- ============================================================
 Config.AllowedLicenses = {
-    -- ["license:1e6fd046242681efb4d9087432c230505738d324"] = true,
+    -- ["license:xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"] = true,
 }
 
 -- Allow rsg-core admin group (admin/god) automatically (true/false)
