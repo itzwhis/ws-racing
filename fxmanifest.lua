@@ -14,8 +14,6 @@ files {
     'html/index.html',
     'html/style.css',
     'html/app.js',
-    'html/wscore.png',
-    'html/racecar.png',
     'html/wsscripts-logo.png',
 }
 
