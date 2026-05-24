@@ -1,6 +1,4 @@
-<p align="center">
-  <img src="./wsscripts-logo.png" alt="WS Scripts" width="220" />
-</p>
+
 
 <h1 align="center">WS Racing — Horse & Wagon Race System for RedM</h1>
 
