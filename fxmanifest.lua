@@ -2,7 +2,7 @@ fx_version 'cerulean'
 game 'rdr3'
 rdr3_warning 'I acknowledge that this is a prerelease build of RedM, and I am aware my resources *will* become incompatible once RedM ships.'
 
-author 'WS Scripts — WS Racing'
+author 'WS Scripts — WS Racing | Not allowed for resale'
 description 'WS Racing — Horse & Wagon Race System (RedM)'
 version '1.0.5-redm'
 
@@ -14,6 +14,8 @@ files {
     'html/index.html',
     'html/style.css',
     'html/app.js',
+    'html/wscore.png',
+    'html/racecar.png',
     'html/wsscripts-logo.png',
 }
 
@@ -36,4 +38,3 @@ client_scripts {
 }
 
 lua54 'yes'
-
