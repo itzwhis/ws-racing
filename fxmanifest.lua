@@ -4,7 +4,7 @@ rdr3_warning 'I acknowledge that this is a prerelease build of RedM, and I am aw
 
 author 'WS Scripts — WS Racing | Not allowed for resale'
 description 'WS Racing — Horse & Wagon Race System (RedM)'
-version '1.0.5-redm'
+version '1.0.6'
 
 dependencies { 'rsg-core', 'ox_lib', 'oxmysql' }
 
