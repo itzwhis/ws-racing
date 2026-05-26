@@ -1,6 +1,10 @@
 -- ============================================================
 -- WS Racing — Client NUI Menu (adapted to RedM mounts)
+ 
+ -- ============================================================
+-- Reselling is NOT allowed.
 -- ============================================================
+
 local RSGCore = exports['rsg-core']:GetCoreObject()
 
 CreatingRace = {
@@ -55,7 +59,7 @@ local function OpenRaceUI(role, payload)
     MenuState.role  = role or 'player'
     MenuState.lobby = payload or MenuState.lobby
     SetNuiFocus(true, true)
-    SendNUIMessage({ action = 'open', role = MenuState.role, data = MenuState.lobby })
+    SendNUIMessage({ action = 'open', role = MenuState.role, data = MenuState.lobby, playerName = GetPlayerName(PlayerId()) })
     PushCreateState()
 end
 
@@ -86,56 +90,44 @@ local function SnapToGround(x, y, z)
 end
 
 -- ============================================================
--- KEYBINDS — Add checkpoint / start / undo (ox_lib)
+-- COMMANDS — Add checkpoint / start / undo
 -- ============================================================
-lib.addKeybind({
-    name = 'rsg_add_checkpoint', description = '[WS Racing] Add Checkpoint',
-    defaultKey = 'F5',
-    onPressed = function()
-        if not IsCreating() then
-            lib.notify({ title='Racing', description='Start route setup in the UI first', type='error', duration=4000 })
-            return
-        end
-        local pos = GetEntityCoords(PlayerPedId())
-        local gz  = SnapToGround(pos.x, pos.y, pos.z)
-        table.insert(CreatingRace.checkpoints, { x=pos.x, y=pos.y, z=gz })
-        PushCreateState()
-        lib.notify({ title='Racing', description='📍 Checkpoint #' .. #CreatingRace.checkpoints .. ' Added', type='success', duration=2500 })
+RegisterCommand('addcp', function()
+    if not IsCreating() then
+        lib.notify({ title='Racing', description='Start route setup in the UI first', type='error', duration=4000 })
+        return
     end
-})
+    local pos = GetEntityCoords(PlayerPedId())
+    local gz  = SnapToGround(pos.x, pos.y, pos.z)
+    table.insert(CreatingRace.checkpoints, { x=pos.x, y=pos.y, z=gz })
+    PushCreateState()
+    lib.notify({ title='Racing', description='📍 Checkpoint #' .. #CreatingRace.checkpoints .. ' Added', type='success', duration=2500 })
+end, false)
 
-lib.addKeybind({
-    name = 'rsg_add_start', description = '[WS Racing] Add Start Position',
-    defaultKey = 'F6',
-    onPressed = function()
-        if not IsCreating() then
-            lib.notify({ title='Racing', description='Start route setup in the UI first', type='error', duration=4000 })
-            return
-        end
-        local ped = PlayerPedId()
-        local pos = GetEntityCoords(ped)
-        local heading = GetEntityHeading(ped)
-        local gz  = SnapToGround(pos.x, pos.y, pos.z)
-        table.insert(CreatingRace.startPositions, { x=pos.x, y=pos.y, z=gz, heading=heading })
-        PushCreateState()
-        lib.notify({ title='Racing', description='🚦 Start Position #' .. #CreatingRace.startPositions .. ' Added', type='success', duration=2500 })
+RegisterCommand('addstart', function()
+    if not IsCreating() then
+        lib.notify({ title='Racing', description='Start route setup in the UI first', type='error', duration=4000 })
+        return
     end
-})
+    local ped = PlayerPedId()
+    local pos = GetEntityCoords(ped)
+    local heading = GetEntityHeading(ped)
+    local gz  = SnapToGround(pos.x, pos.y, pos.z)
+    table.insert(CreatingRace.startPositions, { x=pos.x, y=pos.y, z=gz, heading=heading })
+    PushCreateState()
+    lib.notify({ title='Racing', description='🚦 Start Position #' .. #CreatingRace.startPositions .. ' Added', type='success', duration=2500 })
+end, false)
 
-lib.addKeybind({
-    name = 'rsg_undo_checkpoint', description = '[WS Racing] Undo Last Checkpoint',
-    defaultKey = 'F7',
-    onPressed = function()
-        if not IsCreating() then return end
-        if #CreatingRace.checkpoints > 0 then
-            table.remove(CreatingRace.checkpoints)
-            PushCreateState()
-            lib.notify({ title='Racing', description='↩️ Last Checkpoint Removed', type='warning', duration=2000 })
-        else
-            lib.notify({ title='Racing', description='No checkpoints to remove', type='error', duration=3000 })
-        end
+RegisterCommand('undo', function()
+    if not IsCreating() then return end
+    if #CreatingRace.checkpoints > 0 then
+        table.remove(CreatingRace.checkpoints)
+        PushCreateState()
+        lib.notify({ title='Racing', description='↩️ Last Checkpoint Removed', type='warning', duration=2000 })
+    else
+        lib.notify({ title='Racing', description='No checkpoints to remove', type='error', duration=3000 })
     end
-})
+end, false)
 
 -- ============================================================
 -- NET EVENTS
@@ -196,7 +188,12 @@ RegisterNetEvent('race:receiveRecentRaces', function(data)
 end)
 
 RegisterNetEvent('race:startCountdown', function() CloseRaceUI() end)
-RegisterNetEvent('race:showResults',   function() CloseRaceUI() end)
+RegisterNetEvent('race:showResults',   function()
+    CloseRaceUI()
+    -- Refresh stats in background so Player Stats page is up-to-date on next open
+    Wait(2000) -- small delay to let the server finish saving the result
+    TriggerServerEvent('race:getMyStats')
+end)
 RegisterNetEvent('race:cancelled',     function() CloseRaceUI() end)
 
 -- ============================================================
@@ -302,7 +299,7 @@ RegisterNUICallback('startCreateRoute', function(data, cb)
         startPositions  = {}
     }
     PushCreateState()
-    lib.notify({ title='Racing', description='🏗️ Route Setup: ' .. CreatingRace.name .. ' — F5=CP, F6=Start, F7=Undo', type='success', duration=8000 })
+    lib.notify({ title='Racing', description='🏗️ Route Setup: ' .. CreatingRace.name .. ' — /addcp, /addstart, /undo', type='success', duration=8000 })
     cb('ok')
 end)
 
