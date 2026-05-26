@@ -5,7 +5,8 @@
 <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
 <title>WS Racing</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=IM+Fell+English+SC&family=IM+Fell+English:ital@0;1&family=Rye&display=swap" rel="stylesheet">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700&family=Crimson+Text:ital,wght@0,400;0,600;1,400;1,600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="style.css"/>
 </head>
 <body>
@@ -92,7 +93,6 @@
           <div class="tb-live hidden" id="tb-live"><span class="live-dot"></span>Live</div>
         </div>
         <div class="tb-r">
-          <div class="tb-clock" id="server-clock">00:00:00</div>
           <button class="tb-x" id="close-btn">✕</button>
         </div>
       </div>
@@ -291,7 +291,6 @@ Join the race and prove you're the fastest rider in the West.</h1>
       <div class="modal-hd"><h3 class="modal-title">— Start Race —</h3></div>
       <div class="modal-body">
         <p id="start-modal-info" class="modal-info"></p>
-        <div class="start-warn">All riders will be teleported to start positions</div>
       </div>
       <div class="modal-ft">
         <button class="btn btn-ghost" id="start-cancel">Cancel</button>
@@ -329,6 +328,12 @@ Join the race and prove you're the fastest rider in the West.</h1>
   </div>
 
 </div>
+
+<!-- ─────────── FULLSCREEN COUNTDOWN OVERLAY ─────────── -->
+<div id="countdown-overlay" class="cd-overlay hidden">
+  <div id="countdown-number" class="cd-number"></div>
+</div>
+
 <script src="app.js"></script>
 </body>
 </html>
