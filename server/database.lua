@@ -1,6 +1,9 @@
 -- ============================================================
 -- WS Racing — Database Layer (oxmysql)
 -- ============================================================
+ -- ============================================================
+-- Reselling is NOT allowed.
+-- ============================================================
 Database = {}
 
 function Database.Initialize()
@@ -42,7 +45,7 @@ function Database.Initialize()
         ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4
     ]], {})
     exports.oxmysql:execute([[
-        CREATE TABLE IF NOT EXISTS `ws_results` (
+        CREATE TABLE IF NOT EXISTS `ws_race_results` (
             `id`          INT AUTO_INCREMENT PRIMARY KEY,
             `race_id`     INT          NOT NULL,
             `citizen_id`  VARCHAR(50)  NOT NULL,
@@ -58,7 +61,23 @@ function Database.Initialize()
     -- Migrations (safe if column already exists on MariaDB 10.2+)
     exports.oxmysql:execute('ALTER TABLE `ws_races`   ADD COLUMN IF NOT EXISTS `laps`        INT         NOT NULL DEFAULT 1', {})
     exports.oxmysql:execute("ALTER TABLE `ws_races`   ADD COLUMN IF NOT EXISTS `mount_class` VARCHAR(50) NOT NULL DEFAULT 'open'", {})
-    exports.oxmysql:execute('ALTER TABLE `ws_results` ADD COLUMN IF NOT EXISTS `position`    INT         NOT NULL DEFAULT 0', {})
+    exports.oxmysql:execute('ALTER TABLE `ws_race_results` ADD COLUMN IF NOT EXISTS `race_id`     INT          NOT NULL DEFAULT 0', {})
+    exports.oxmysql:execute("ALTER TABLE `ws_race_results` ADD COLUMN IF NOT EXISTS `citizen_id`  VARCHAR(50)  NOT NULL DEFAULT ''", {})
+    exports.oxmysql:execute("ALTER TABLE `ws_race_results` ADD COLUMN IF NOT EXISTS `player_name` VARCHAR(100) NOT NULL DEFAULT ''", {})
+    exports.oxmysql:execute('ALTER TABLE `ws_race_results` ADD COLUMN IF NOT EXISTS `finish_time` INT          NOT NULL DEFAULT 0', {})
+    exports.oxmysql:execute('ALTER TABLE `ws_race_results` ADD COLUMN IF NOT EXISTS `bet`         INT          NOT NULL DEFAULT 0', {})
+    exports.oxmysql:execute('ALTER TABLE `ws_race_results` ADD COLUMN IF NOT EXISTS `prize`       INT          NOT NULL DEFAULT 0', {})
+    exports.oxmysql:execute('ALTER TABLE `ws_race_results` ADD COLUMN IF NOT EXISTS `position`    INT          NOT NULL DEFAULT 0', {})
+    exports.oxmysql:execute('ALTER TABLE `ws_race_results` ADD COLUMN IF NOT EXISTS `finished_at` TIMESTAMP    DEFAULT CURRENT_TIMESTAMP', {})
+    exports.oxmysql:execute([[
+        CREATE TABLE IF NOT EXISTS `ws_race_stats` (
+            `player_id` VARCHAR(50)  NOT NULL PRIMARY KEY,
+            `name`      VARCHAR(100) NOT NULL,
+            `wins`      INT          NOT NULL DEFAULT 0,
+            `races`     INT          NOT NULL DEFAULT 0,
+            `best_time` INT          NULL
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4
+    ]], {})
     print('^2[ws-racing]^7 Database initialized')
 end
 
@@ -125,21 +144,69 @@ end
 
 function Database.SaveResult(raceId, citizenId, name, finishTime, bet, prize, position)
     exports.oxmysql:insert_async(
-        'INSERT INTO ws_results (race_id,citizen_id,player_name,finish_time,bet,prize,position) VALUES (?,?,?,?,?,?,?)',
+        'INSERT INTO ws_race_results (race_id,citizen_id,player_name,finish_time,bet,prize,position) VALUES (?,?,?,?,?,?,?)',
         { raceId, citizenId, name, finishTime, bet, prize, position or 0 }
     )
+    Database.UpsertPlayerStats(citizenId, name, finishTime, position)
+end
+
+-- Aggregated per-player stats table (player_id, name, wins, races, best_time)
+function Database.UpsertPlayerStats(citizenId, name, finishTime, position)
+    if not citizenId then return end
+    local finished = (finishTime and finishTime > 0 and position and position > 0)
+    local isWin    = (position == 1) and finished
+    local bt       = finished and finishTime or nil
+    exports.oxmysql:execute_async([[
+        INSERT INTO ws_race_stats (player_id, name, wins, races, best_time)
+        VALUES (?, ?, ?, 1, ?)
+        ON DUPLICATE KEY UPDATE
+            name = VALUES(name),
+            races = races + 1,
+            wins  = wins + VALUES(wins),
+            best_time = CASE
+                WHEN VALUES(best_time) IS NULL THEN best_time
+                WHEN best_time IS NULL OR best_time = 0 THEN VALUES(best_time)
+                WHEN VALUES(best_time) < best_time THEN VALUES(best_time)
+                ELSE best_time
+            END
+    ]], { citizenId, name or 'Unknown', isWin and 1 or 0, bt })
 end
 
 function Database.GetLeaderboard(raceId)
     return exports.oxmysql:query_async(
-        'SELECT * FROM ws_results WHERE race_id=? ORDER BY finish_time ASC LIMIT 20', { raceId }
+        'SELECT * FROM ws_race_results WHERE race_id=? ORDER BY finish_time ASC LIMIT 20', { raceId }
     ) or {}
 end
 
 function Database.GetPlayerHistory(citizenId)
     return exports.oxmysql:query_async(
-        'SELECT * FROM ws_results WHERE citizen_id=? ORDER BY finished_at DESC LIMIT 20', { citizenId }
+        'SELECT * FROM ws_race_results WHERE citizen_id=? ORDER BY finished_at DESC LIMIT 20', { citizenId }
     ) or {}
+end
+
+function Database.GetPlayerStats(citizenId)
+    local row = exports.oxmysql:single_async([[
+        SELECT
+            COUNT(*)                                          AS total_races,
+            SUM(CASE WHEN position = 1 THEN 1 ELSE 0 END)    AS wins,
+            SUM(CASE WHEN position > 1 THEN 1 ELSE 0 END)    AS losses,
+            SUM(CASE position
+                WHEN 1 THEN 100 WHEN 2 THEN 75 WHEN 3 THEN 50
+                WHEN 4 THEN 40  WHEN 5 THEN 30 WHEN 6 THEN 25
+                WHEN 7 THEN 20  WHEN 8 THEN 15 WHEN 9 THEN 10
+                ELSE 5 END)                                   AS score
+        FROM ws_race_results
+        WHERE citizen_id = ? AND finish_time > 0 AND position > 0
+    ]], { citizenId })
+    if not row then
+        return { wins = 0, losses = 0, totalRaces = 0, score = 0 }
+    end
+    return {
+        wins       = tonumber(row.wins)        or 0,
+        losses     = tonumber(row.losses)      or 0,
+        totalRaces = tonumber(row.total_races) or 0,
+        score      = tonumber(row.score)       or 0,
+    }
 end
 
 function Database.GetRecentRaces()
@@ -150,7 +217,7 @@ function Database.GetRecentRaces()
             MIN(res.finish_time) AS best_time,
             SUM(DISTINCT res.bet) AS total_pot
         FROM ws_races r
-        INNER JOIN ws_results res ON res.race_id = r.id
+        INNER JOIN ws_race_results res ON res.race_id = r.id
         WHERE res.finish_time > 0 AND res.position > 0
         GROUP BY r.id, r.name, r.race_type, r.laps
         ORDER BY last_run DESC
@@ -159,10 +226,10 @@ function Database.GetRecentRaces()
     for _, race in ipairs(races) do
         race.top10 = exports.oxmysql:query_async([[
             SELECT t.player_name, t.finish_time, t.position, t.prize, t.bet
-            FROM ws_results t
+            FROM ws_race_results t
             INNER JOIN (
                 SELECT citizen_id, MIN(finish_time) AS best_time
-                FROM ws_results WHERE race_id=? AND finish_time>0 AND position>0
+                FROM ws_race_results WHERE race_id=? AND finish_time>0 AND position>0
                 GROUP BY citizen_id
             ) best ON t.citizen_id=best.citizen_id AND t.finish_time=best.best_time
             WHERE t.race_id=? AND t.finish_time>0 AND t.position>0
@@ -182,7 +249,7 @@ function Database.GetGlobalLeaderboard()
                 WHEN 4 THEN 40  WHEN 5 THEN 30 WHEN 6 THEN 25
                 WHEN 7 THEN 20  WHEN 8 THEN 15 WHEN 9 THEN 10
                 ELSE 5 END) AS score
-        FROM ws_results WHERE finish_time>0 AND position>0
+        FROM ws_race_results WHERE finish_time>0 AND position>0
         GROUP BY citizen_id ORDER BY score DESC LIMIT 10
     ]], {}) or {}
 end
