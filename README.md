@@ -9,9 +9,10 @@
 
 <p align="center">
   <a href="https://discord.gg/5fasym92pm"><img src="https://img.shields.io/badge/Discord-Join%20WS%20Scripts-5865F2?logo=discord&logoColor=white" alt="Discord"/></a>
-  <img src="https://img.shields.io/badge/RedM-rdr3-red.svg" alt="RedM"/>
+<a href="https://github.com/Rexshack-RedM/rsg-core">
   <img src="https://img.shields.io/badge/framework-rsg--core-blue.svg" alt="rsg-core"/>
-  <img src="https://img.shields.io/badge/version-5.2.0--redm-green.svg" alt="Version"/>
+</a>
+  <img src="https://img.shields.io/badge/version-1.0.6--redm-green.svg" alt="Version"/>
   <img src="https://img.shields.io/badge/Lua-5.4-2C2D72.svg" alt="Lua"/>
 </p>
 
