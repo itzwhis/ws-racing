@@ -1,21 +1,38 @@
 -- ============================================================
 -- WS Racing — Server commands
 -- ============================================================
+ -- ============================================================
+-- Reselling is NOT allowed.
+-- ============================================================
 local RSGCore = exports['rsg-core']:GetCoreObject()
 
+-- /racemenu — open menu directly (no round-trip) so it always works
 RegisterCommand('racemenu', function(src)
-    TriggerClientEvent('race:requestMenuFromCmd', src)
+    if src == 0 then
+        print('[ws-racing] /racemenu must be used in-game, not from console')
+        return
+    end
+    local p = RSGCore.Functions.GetPlayer(src)
+    if not p then
+        print(('[ws-racing] /racemenu: player %s not loaded yet'):format(src))
+        return
+    end
+    if IsAdmin(src) then
+        print(('[ws-racing] /racemenu: opening ADMIN menu for src %s'):format(src))
+        TriggerClientEvent('race:openAdminMenu', src)
+    else
+        print(('[ws-racing] /racemenu: opening PLAYER menu for src %s'):format(src))
+        TriggerClientEvent('race:openPlayerMenu', src, {
+            active       = RaceState and RaceState.active or false,
+            raceData     = RaceState and RaceState.raceData or nil,
+            participants = RaceState and RaceState.participants or {},
+            betAmount    = RaceState and RaceState.betAmount or 0,
+        })
+    end
 end, false)
 
 RegisterCommand('leaderboard', function(src)
     TriggerClientEvent('race:openLeaderboardPicker', src)
-end, false)
-
-RegisterCommand('mystats', function(src)
-    local player = RSGCore.Functions.GetPlayer(src)
-    if not player then return end
-    local stats = Database.GetPlayerHistory(player.PlayerData.citizenid)
-    TriggerClientEvent('race:receiveMyStats', src, stats)
 end, false)
 
 RegisterCommand('resetrace', function(src)
@@ -28,9 +45,7 @@ RegisterCommand('resetrace', function(src)
     RaceState.active = false
     TriggerClientEvent('race:cancelled', -1)
     ResetRaceState(false)
-    TriggerClientEvent('ox_lib:notify', -1, {
-        title='Racing', description='Race state force-reset by admin', type='warning', duration=4000,
-    })
+    Notify(src, 'Race state force-reset by admin', 'warning')
     print('[ws-racing] Race state force-reset by admin ' .. src)
 end, false)
 
