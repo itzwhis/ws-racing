@@ -1,6 +1,9 @@
 -- ============================================================
 -- WS Racing — Client Race Logic (RedM port)
 -- Uses proximity-based checkpoints + RedM blips + simple markers
+
+ -- ============================================================
+-- Reselling is NOT allowed.
 -- ============================================================
 local RSGCore = exports['rsg-core']:GetCoreObject()
 
