@@ -1,6 +1,9 @@
 -- ============================================================
 -- WS Racing — Server Events (adapted from qb-core)
 -- ============================================================
+ -- ============================================================
+-- Reselling is NOT allowed.
+-- ============================================================
 local RSGCore = exports['rsg-core']:GetCoreObject()
 
 local endRaceLock = false
@@ -169,11 +172,6 @@ RegisterNetEvent('race:adminOpenLobby', function(d)
     end
 
     Notify(src, '✅ Lobby opened: ' .. race.name, 'success')
-    TriggerClientEvent('ox_lib:notify', -1, {
-        title = 'Racing',
-        description = '🏁 Race Lobby: ' .. race.name .. ' — type /racemenu to join',
-        type = 'inform', duration = Config.NotifyDuration,
-    })
     TriggerClientEvent('race:lobbyOpened', src)
     TriggerClientEvent('race:lobbySelected', -1, {
         active=false, raceId=RaceState.raceId, raceData=RaceState.raceData,
@@ -401,9 +399,11 @@ RegisterNetEvent('race:getGlobalLeaderboard', function()
 end)
 
 RegisterNetEvent('race:getMyStats', function()
-    local player = RSGCore.Functions.GetPlayer(source)
+    local src    = source
+    local player = RSGCore.Functions.GetPlayer(src)
     if not player then return end
-    TriggerClientEvent('race:receiveMyStats', source, Database.GetPlayerHistory(player.PlayerData.citizenid))
+    local stats  = Database.GetPlayerStats(player.PlayerData.citizenid)
+    TriggerClientEvent('race:receiveMyStats', src, stats)
 end)
 
 RegisterNetEvent('race:requestRecentRaces', function()
