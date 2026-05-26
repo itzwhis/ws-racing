@@ -24,14 +24,9 @@ function fmt$(v){ return `$${Number(v||0).toLocaleString()}`; }
 function fmtCoord(v){ return Number(v).toFixed(1); }
 function setTxt(id,v){ const e=document.getElementById(id); if(e) e.textContent=v; }
 
-// Clock — only update when UI is open
-let clockTimer = null;
-function startClock(){
-  if(clockTimer) return;
-  const tick = ()=>{ const e=document.getElementById('server-clock'); if(e) e.textContent=new Date().toTimeString().slice(0,8); };
-  tick(); clockTimer = setInterval(tick, 1000);
-}
-function stopClock(){ if(clockTimer){ clearInterval(clockTimer); clockTimer=null; } }
+// Real-time clock removed from UI
+function startClock(){}
+function stopClock(){}
 
 function getTierFromScore(score){
   const s=Number(score||0);
@@ -52,12 +47,13 @@ function switchTab(tabId){
   if(tabId==='leaderboard') nui('requestGlobalLeaderboard');
   if(tabId==='lobby')       renderLobbyInTab();
   if(tabId==='dashboard')   nui('requestRecentRaces');
+  if(tabId==='stats')       nui('requestMyStats');
 }
 
 function renderDashboard(){
   const race=state.lobby.raceData, parts=state.lobby.participants||[], run=state.lobby.active;
   setTxt('hero-badge-text', run?'Race Running' : (race?'Lobby Open':'No active race'));
-  setTxt('hero-title', race?race.name : 'Saddle up, partner');
+  setTxt('hero-title', race?race.name : 'Ride Into Victory');
   setTxt('hero-subtitle', race?`${parts.length} rider(s) joined · Pot: ${fmt$(state.lobby.betAmount)}` : 'Use /racemenu to open this here panel.');
   setTxt('stat-players', String(parts.length));
   setTxt('stat-bet', fmt$(state.lobby.betAmount));
@@ -182,7 +178,7 @@ function renderMiniMap(){
 function renderAll(){
   const isAdmin=state.role==='admin';
   document.querySelectorAll('.admin-only').forEach(el=>el.classList.toggle('hidden',!isAdmin));
-  setTxt('profile-role',isAdmin?'Marshal':'Racer');
+    setTxt('profile-role','');
   renderDashboard(); renderSavedRaces(); renderGlobalLeaderboard(); renderCreateState(); renderPlayerStats(); renderLobbyInTab();
 }
 
@@ -213,12 +209,60 @@ function closeStartModal(){ startModal.classList.add('hidden'); }
 window.joinRace=()=>nui('playerJoin');
 window.deleteRace=(id,name)=>{ if(confirm(`Delete "${name}"? Cannot be undone.`)){ nui('deleteRace',{raceId:id}); setTimeout(()=>nui('requestAdminRaces'),500); } };
 
+// ─────────── Cinematic countdown SFX (Web Audio) ───────────
+let __cdAudioCtx=null;
+function __cdCtx(){
+  if(!__cdAudioCtx){ try{ __cdAudioCtx = new (window.AudioContext||window.webkitAudioContext)(); }catch(e){} }
+  if(__cdAudioCtx && __cdAudioCtx.state==='suspended'){ try{ __cdAudioCtx.resume(); }catch(e){} }
+  return __cdAudioCtx;
+}
+function playCountdownBeep(isGo){
+  const ctx=__cdCtx(); if(!ctx) return;
+  const now=ctx.currentTime;
+  // Low cinematic boom
+  const o1=ctx.createOscillator(), g1=ctx.createGain();
+  o1.type='sine'; o1.frequency.setValueAtTime(isGo?160:110, now);
+  o1.frequency.exponentialRampToValueAtTime(isGo?80:55, now+0.6);
+  g1.gain.setValueAtTime(0.0001, now);
+  g1.gain.exponentialRampToValueAtTime(isGo?1.0:0.8, now+0.02);
+  g1.gain.exponentialRampToValueAtTime(0.0001, now+(isGo?1.4:0.9));
+  o1.connect(g1).connect(ctx.destination);
+  o1.start(now); o1.stop(now+(isGo?1.5:1.0));
+  // Bright tone on top
+  const o2=ctx.createOscillator(), g2=ctx.createGain();
+  o2.type=isGo?'sawtooth':'triangle';
+  o2.frequency.setValueAtTime(isGo?880:520, now);
+  if(isGo) o2.frequency.exponentialRampToValueAtTime(1320, now+0.4);
+  g2.gain.setValueAtTime(0.0001, now);
+  g2.gain.exponentialRampToValueAtTime(isGo?0.5:0.35, now+0.02);
+  g2.gain.exponentialRampToValueAtTime(0.0001, now+(isGo?1.2:0.6));
+  o2.connect(g2).connect(ctx.destination);
+  o2.start(now); o2.stop(now+(isGo?1.3:0.7));
+}
+let __cdHideT=null;
+function showCountdown(value){
+  const ov=document.getElementById('countdown-overlay');
+  const num=document.getElementById('countdown-number');
+  if(!ov||!num) return;
+  const isGo = (String(value).toUpperCase()==='GO!'||String(value).toUpperCase()==='GO');
+  num.textContent = isGo ? 'GO!' : String(value);
+  num.classList.remove('cd-go'); void num.offsetWidth;
+  if(isGo) num.classList.add('cd-go');
+  // restart animation
+  num.style.animation='none'; void num.offsetWidth; num.style.animation='';
+  ov.classList.remove('hidden');
+  playCountdownBeep(isGo);
+  if(__cdHideT) clearTimeout(__cdHideT);
+  __cdHideT=setTimeout(()=>{ ov.classList.add('hidden'); }, isGo?1200:950);
+}
+
 window.addEventListener('message',event=>{
   const msg=event.data||{};
   if(msg.action==='open'){
     app.classList.remove('hidden');
     state.role=msg.role||'player'; state.lobby=msg.data||state.lobby;
     if(msg.stats) state.playerStats=msg.stats;
+    if(msg.playerName) setTxt('profile-name', msg.playerName);
     startClock();
     switchTab('dashboard'); renderAll();
     nui('requestRecentRaces');
@@ -232,6 +276,24 @@ window.addEventListener('message',event=>{
   if(msg.action==='createState'){ state.create=msg.create||state.create; renderCreateState(); }
   if(msg.action==='lobbyOpened'){ window.closeLobbyModal(); switchTab('dashboard'); renderAll(); }
   if(msg.action==='updatePlayerStats'){ state.playerStats=msg.stats||state.playerStats; renderPlayerStats(); }
+  if(msg.action==='receiveStats'){
+    const rows=msg.stats||[];
+    // If the server sends raw history rows, aggregate them; if already aggregated, use directly.
+    if(Array.isArray(rows)){
+      const agg={ wins:0, losses:0, totalRaces:rows.length, score:0 };
+      const pts=[100,75,50,40,30,25,20,15,10,5];
+      rows.forEach(r=>{
+        const pos=Number(r.position||0);
+        if(pos===1) agg.wins++; else if(pos>1) agg.losses++;
+        agg.score+= pos>=1&&pos<=9 ? (pts[pos-1]||5) : (pos>0?5:0);
+      });
+      state.playerStats=agg;
+    } else {
+      state.playerStats=rows;
+    }
+    renderPlayerStats();
+  }
+  if(msg.action==='countdown'){ showCountdown(msg.value); }
   if(msg.action==='raceAnnounce'){
     const el=document.getElementById('race-announce');
     const list=document.getElementById('ra-list');
