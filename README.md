@@ -12,7 +12,7 @@
 <a href="https://github.com/Rexshack-RedM">
   <img src="https://img.shields.io/badge/framework-rsg--core-blue.svg" alt="rsg-core"/>
 </a>
-  <img src="https://img.shields.io/badge/version-1.0.6--green.svg" alt="Version"/>
+  <img src="https://img.shields.io/badge/version-1.0.6-green.svg" alt="Version"/>
   <img src="https://img.shields.io/badge/Lua-5.4-2C2D72.svg" alt="Lua"/>
 </p>
 
