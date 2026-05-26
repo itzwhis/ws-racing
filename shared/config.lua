@@ -2,8 +2,8 @@ Config = {}
 
 -- ============================================================
 -- RACE PERMISSIONS — License based
--- License format: "license:xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
 -- Find your license via console: print(GetPlayerIdentifiers(source))
+-- Reselling is NOT allowed.
 -- ============================================================
 Config.AllowedLicenses = {
     -- ["license:xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"] = true,
@@ -15,7 +15,7 @@ Config.UseRSGAdminGroup = true
 -- ============================================================
 -- GENERAL SETTINGS
 -- ============================================================
-Config.CheckpointRadius = 12.0       -- horse races: tighter than cars
+Config.CheckpointRadius = 4.0       -- horse races: tighter than cars
 Config.NotifyDuration   = 5000
 Config.MinParticipants  = 0
 Config.UseMPH           = true       -- true = MPH, false = KM/H
@@ -43,4 +43,4 @@ Config.MountClasses = {
 -- ============================================================
 Config.DiscordWebhook = 'YOUR_WEBHOOK_URL_HERE'
 Config.DiscordBotName = 'WS Racing'
-Config.DiscordAvatar  = 'https://i.imgur.com/4M34hi2.png'
+Config.DiscordAvatar  = 'https://i.ibb.co/GvqKDVjG/wsscripts-logo-optimized-1000.png'
